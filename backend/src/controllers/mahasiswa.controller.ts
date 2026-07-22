@@ -142,3 +142,22 @@ export const deleteMahasiswa = asyncHandler(async (req: Request, res: Response) 
     await pool.query("DELETE FROM mahasiswa WHERE id = ?", [id]);
     res.json({ message: "Mahasiswa berhasil dihapus" });
 });
+
+export const uploadFotoMahasiswa = asyncHandler(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!req.file) {
+        return res.status(400).json({ message: "File foto wajib diunggah" });
+    }
+
+    const [rows] = await pool.query("SELECT foto FROM mahasiswa WHERE id = ?", [id]);
+    const existingMhs = (rows as any[])[0];
+    if (!existingMhs) return res.status(404).json({ message: "Mahasiswa tidak ditemukan" });
+
+    if (existingMhs.foto) {
+        const oldPath = path.join(__dirname, "../../uploads/mahasiswa", existingMhs.foto);
+        if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    }
+
+    await pool.query("UPDATE mahasiswa SET foto = ? WHERE id = ?", [req.file.filename, id]);
+    res.json({ message: "Foto mahasiswa berhasil diunggah", foto: req.file.filename });
+});
