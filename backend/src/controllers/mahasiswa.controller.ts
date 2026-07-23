@@ -26,8 +26,8 @@ export const getAllMahasiswa = asyncHandler(async (req: Request, res: Response) 
         params.push(prodi_id);
     }
     if (angkatan) {
-        where += " AND m.angkatan = ?";
-        params.push(angkatan);
+        where += " AND m.angkatan LIKE ?";
+        params.push(`%${angkatan}%`);
     }
 
     const [rows] = await pool.query(
@@ -36,7 +36,7 @@ export const getAllMahasiswa = asyncHandler(async (req: Request, res: Response) 
      FROM mahasiswa m
      JOIN prodi p ON m.prodi_id = p.id
      ${where}
-     ORDER BY m.id DESC
+     ORDER BY m.nim DESC
      LIMIT ? OFFSET ?`,
         [...params, limitNum, offset]
     );

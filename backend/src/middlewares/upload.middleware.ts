@@ -13,8 +13,18 @@ const storage = multer.diskStorage({
         cb(null, uploadDir);
     },
     filename: (_req, file, cb) => {
-        const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-        cb(null, unique + path.extname(file.originalname));
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0");
+        const date = String(now.getDate()).padStart(2, "0");
+        const formattedDate = `${date}-${month}-${year}`; // Format: DD-MM-YYYY
+
+        const ext = path.extname(file.originalname);
+        const nameWithoutExt = path.basename(file.originalname, ext).replace(/[^a-zA-Z0-9_-]/g, "_");
+        const random = Math.floor(1000 + Math.random() * 9000);
+
+        const newFilename = `${nameWithoutExt}_${formattedDate}_${random}${ext}`;
+        cb(null, newFilename);
     },
 });
 
