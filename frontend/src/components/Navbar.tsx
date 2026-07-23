@@ -64,16 +64,21 @@ export default function Navbar() {
 
                     <div className="d-flex align-items-center text-white">
                         <div className="me-3 text-end">
-                            <div className="fw-semibold small">{user.nama}</div>
-                            {getRoleBadge(user.role)}
+                            <div className="fw-semibold small">{user.nama} - {getRoleBadge(user.role)}</div>
+
                         </div>
                         <button
-                            onClick={logout}
+                            onClick={() => {
+                                if (confirm("Apakah Anda yakin ingin keluar dari akun ini?")) {
+                                    logout();
+                                }
+                            }}
                             className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
                         >
                             <i className="bi bi-box-arrow-right"></i>
                             Logout
                         </button>
+
                     </div>
                 </div>
             </div>

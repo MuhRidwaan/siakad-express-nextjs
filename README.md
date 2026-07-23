@@ -14,10 +14,22 @@ Aplikasi **Sistem Informasi Akademik (SIAKAD)** berbasis Web Full-Stack mengguna
 
 ## ✨ Fitur Utama
 
-- **Authentication & Security**: Login, Register, Hashing Password (`bcrypt`), JWT Token, Role-Based Access Control (`Admin`, `Operator`, `Viewer`).
+- **Authentication & Security**: Login, Hashing Password (`bcrypt`), JWT Token, Role-Based Access Control (`Admin`, `Operator`, `Viewer`).
 - **Manajemen Mahasiswa**: CRUD Data Mahasiswa, Upload Foto Profil, Filter Prodi/Angkatan, Search, & Pagination.
 - **Manajemen Program Studi**: CRUD Data Program Studi.
 - **Manajemen User (Admin)**: Pengelolaan akun pengguna & fitur Reset Password acak.
+
+---
+
+## 🔑 Akun Demo Default
+
+Pengujian aplikasi dapat menggunakan 3 akun default berikut (Password sama untuk semua akun: **`password`**):
+
+| Role | Email | Password | Hak Akses |
+| :--- | :--- | :--- | :--- |
+| 🔴 **Admin** | `admin@gmail.com` | `password` | Akses Penuh (CRUD Mahasiswa, Prodi, Manajemen User & Reset Password) |
+| 🔵 **Operator** | `operator@gmail.com` | `password` | Tambah & Edit Data (Mahasiswa & Prodi) |
+| 🟢 **Viewer** | `viewer@gmail.com` | `password` | Hanya dapat melihat data (Read-Only) |
 
 ---
 
@@ -46,7 +58,7 @@ cd siakad-express-nextjs
    ```text
    backend/database/schema.sql
    ```
-   *(Atau jalankan query di `schema.sql` pada SQL Editor phpMyAdmin)*.
+   *(File SQL ini sudah otomatis menyertakan tabel, data dummy 25 mahasiswa, dan 3 akun user default)*.
 
 ---
 
@@ -111,13 +123,8 @@ cd siakad-express-nextjs
 
 ---
 
-## 🔑 Penggunaan Aplikasi
+## 📱 Penggunaan Aplikasi
 
 1. Buka browser di **`http://localhost:3000`**.
-2. Anda akan diarahkan ke halaman **Login**.
-3. Jika belum memiliki akun, klik **Daftar Sekarang** (`http://localhost:3000/register`).
-4. Buat akun baru dengan pilihan Role:
-   - **Admin**: Memiliki akses penuh (termasuk Manajemen User & Hapus Data).
-   - **Operator**: Diberi akses Tambah & Edit Data.
-   - **Viewer**: Hanya dapat melihat data.
-5. Selamat menguji aplikasi! 🎉
+2. Pilih salah satu tombol akun demo (**Admin**, **Operator**, atau **Viewer**) untuk login otomatis.
+3. Selamat menguji aplikasi! 🎉
