@@ -65,13 +65,13 @@ function MahasiswaFormContent() {
         try {
             if (isEdit) {
                 await apiFetch(`/mahasiswa/${id}`, { method: "PUT", body: formData });
+                router.push("/mahasiswa?alert=updated");
             } else {
                 await apiFetch("/mahasiswa", { method: "POST", body: formData });
+                router.push("/mahasiswa?alert=created");
             }
-            router.push("/mahasiswa");
         } catch (err: any) {
             setError(err.message);
-        } finally {
             setLoading(false);
         }
     };

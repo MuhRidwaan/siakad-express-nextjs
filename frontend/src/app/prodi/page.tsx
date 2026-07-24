@@ -18,6 +18,7 @@ function ProdiContent() {
     const [form, setForm] = useState({ id: 0, kode_prodi: "", nama_prodi: "" });
     const [showForm, setShowForm] = useState(false);
     const [error, setError] = useState("");
+    const [alertInfo, setAlertInfo] = useState<{ type: "success" | "danger"; message: string } | null>(null);
 
     const canEdit = user?.role === "admin" || user?.role === "operator";
     const canDelete = user?.role === "admin";
@@ -52,11 +53,13 @@ function ProdiContent() {
                     method: "PUT",
                     body: JSON.stringify({ kode_prodi: form.kode_prodi, nama_prodi: form.nama_prodi }),
                 });
+                setAlertInfo({ type: "success", message: `Program Studi '${form.nama_prodi}' berhasil diperbarui!` });
             } else {
                 await apiFetch("/prodi", {
                     method: "POST",
                     body: JSON.stringify({ kode_prodi: form.kode_prodi, nama_prodi: form.nama_prodi }),
                 });
+                setAlertInfo({ type: "success", message: `Program Studi '${form.nama_prodi}' berhasil ditambahkan!` });
             }
             setShowForm(false);
             fetchData();
@@ -65,13 +68,14 @@ function ProdiContent() {
         }
     };
 
-    const handleDelete = async (id: number) => {
-        if (!confirm("Yakin ingin menghapus prodi ini?")) return;
+    const handleDelete = async (id: number, nama: string) => {
+        if (!confirm(`Yakin ingin menghapus prodi '${nama}'?`)) return;
         try {
             await apiFetch(`/prodi/${id}`, { method: "DELETE" });
+            setAlertInfo({ type: "success", message: `Program Studi '${nama}' berhasil dihapus!` });
             fetchData();
         } catch (err: any) {
-            alert(err.message);
+            setAlertInfo({ type: "danger", message: err.message });
         }
     };
 
@@ -92,6 +96,15 @@ function ProdiContent() {
                     </button>
                 )}
             </div>
+
+            {/* Notification Alert */}
+            {alertInfo && (
+                <div className={`alert alert-${alertInfo.type} alert-dismissible fade show d-flex align-items-center shadow-sm mb-4`} role="alert">
+                    <i className={`bi ${alertInfo.type === "success" ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill"} fs-5 me-2`}></i>
+                    <div>{alertInfo.message}</div>
+                    <button type="button" className="btn-close" onClick={() => setAlertInfo(null)} aria-label="Close"></button>
+                </div>
+            )}
 
             {/* Search Bar */}
             <div className="card shadow-sm border-0 rounded-3 mb-4" style={{ maxWidth: "450px" }}>
@@ -147,7 +160,7 @@ function ProdiContent() {
                                                         </button>
                                                     )}
                                                     {canDelete && (
-                                                        <button onClick={() => handleDelete(p.id)} className="btn btn-outline-danger">
+                                                        <button onClick={() => handleDelete(p.id, p.nama_prodi)} className="btn btn-outline-danger">
                                                             <i className="bi bi-trash me-1"></i> Hapus
                                                         </button>
                                                     )}

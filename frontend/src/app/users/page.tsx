@@ -17,7 +17,7 @@ function UsersContent() {
     const [showForm, setShowForm] = useState(false);
     const [form, setForm] = useState({ id: 0, nama: "", email: "", password: "", role: "viewer" });
     const [error, setError] = useState("");
-    const [resetInfo, setResetInfo] = useState("");
+    const [alertInfo, setAlertInfo] = useState<{ type: "success" | "danger" | "warning"; message: string } | null>(null);
 
     const fetchData = async () => {
         const data = await apiFetch(`/users?search=${search}`);
@@ -49,11 +49,13 @@ function UsersContent() {
                     method: "PUT",
                     body: JSON.stringify({ nama: form.nama, email: form.email, role: form.role }),
                 });
+                setAlertInfo({ type: "success", message: `Pengguna '${form.nama}' berhasil diperbarui!` });
             } else {
                 await apiFetch("/users", {
                     method: "POST",
                     body: JSON.stringify(form),
                 });
+                setAlertInfo({ type: "success", message: `Pengguna '${form.nama}' berhasil ditambahkan!` });
             }
             setShowForm(false);
             fetchData();
@@ -62,23 +64,24 @@ function UsersContent() {
         }
     };
 
-    const handleDelete = async (id: number) => {
-        if (!confirm("Yakin ingin menghapus user ini?")) return;
+    const handleDelete = async (id: number, nama: string) => {
+        if (!confirm(`Yakin ingin menghapus user '${nama}'?`)) return;
         try {
             await apiFetch(`/users/${id}`, { method: "DELETE" });
+            setAlertInfo({ type: "success", message: `Pengguna '${nama}' berhasil dihapus!` });
             fetchData();
         } catch (err: any) {
-            alert(err.message);
+            setAlertInfo({ type: "danger", message: err.message });
         }
     };
 
-    const handleReset = async (id: number) => {
-        if (!confirm("Reset password user ini menjadi password acak?")) return;
+    const handleReset = async (id: number, nama: string) => {
+        if (!confirm(`Reset password user '${nama}' menjadi password acak?`)) return;
         try {
             const data = await apiFetch(`/users/${id}/reset-password`, { method: "POST" });
-            setResetInfo(`Password baru untuk user: ${data.newPassword}`);
+            setAlertInfo({ type: "warning", message: `Reset Password Berhasil! Password baru untuk ${nama}: ${data.newPassword}` });
         } catch (err: any) {
-            alert(err.message);
+            setAlertInfo({ type: "danger", message: err.message });
         }
     };
 
@@ -109,14 +112,12 @@ function UsersContent() {
                 </button>
             </div>
 
-            {/* Alert Reset Info */}
-            {resetInfo && (
-                <div className="alert alert-warning alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
-                    <i className="bi bi-key-fill fs-5 me-2 text-warning-emphasis"></i>
-                    <div>
-                        <strong>Reset Password Berhasil!</strong> {resetInfo}
-                    </div>
-                    <button type="button" className="btn-close" onClick={() => setResetInfo("")} aria-label="Close"></button>
+            {/* Alert Notification */}
+            {alertInfo && (
+                <div className={`alert alert-${alertInfo.type} alert-dismissible fade show d-flex align-items-center shadow-sm mb-4`} role="alert">
+                    <i className={`bi ${alertInfo.type === "success" ? "bi-check-circle-fill" : alertInfo.type === "warning" ? "bi-key-fill" : "bi-exclamation-triangle-fill"} fs-5 me-2`}></i>
+                    <div>{alertInfo.message}</div>
+                    <button type="button" className="btn-close" onClick={() => setAlertInfo(null)} aria-label="Close"></button>
                 </div>
             )}
 
@@ -168,10 +169,10 @@ function UsersContent() {
                                                 <button onClick={() => openEdit(u)} className="btn btn-outline-primary">
                                                     <i className="bi bi-pencil-square me-1"></i> Edit
                                                 </button>
-                                                <button onClick={() => handleReset(u.id)} className="btn btn-outline-warning text-dark">
+                                                <button onClick={() => handleReset(u.id, u.nama)} className="btn btn-outline-warning text-dark">
                                                     <i className="bi bi-key me-1"></i> Reset Password
                                                 </button>
-                                                <button onClick={() => handleDelete(u.id)} className="btn btn-outline-danger">
+                                                <button onClick={() => handleDelete(u.id, u.nama)} className="btn btn-outline-danger">
                                                     <i className="bi bi-trash me-1"></i> Hapus
                                                 </button>
                                             </div>

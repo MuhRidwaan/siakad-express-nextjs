@@ -26,15 +26,9 @@ export default function LoginPage() {
         }
     };
 
-    const setQuickAccount = (selectedEmail: string) => {
-        setEmail(selectedEmail);
-        setPassword("password");
-        setError("");
-    };
-
     return (
         <div className="container py-5 d-flex justify-content-center align-items-center flex-grow-1">
-            <div className="card shadow border-0 rounded-4 p-4" style={{ maxWidth: "440px", width: "100%" }}>
+            <div className="card shadow border-0 rounded-4 p-4" style={{ maxWidth: "420px", width: "100%" }}>
                 <div className="text-center mb-4">
                     <div className="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2" style={{ width: "56px", height: "56px" }}>
                         <i className="bi bi-mortarboard-fill fs-3"></i>
@@ -49,40 +43,6 @@ export default function LoginPage() {
                         <div>{error}</div>
                     </div>
                 )}
-
-                {/* Quick Account Selector */}
-                <div className="bg-light p-3 rounded-3 mb-4 border">
-                    <div className="d-flex align-items-center mb-2">
-                        <i className="bi bi-person-badge text-primary me-2"></i>
-                        <span className="small fw-bold text-dark">Pilih Akun Demo (Default):</span>
-                    </div>
-                    <div className="d-flex gap-1 flex-wrap">
-                        <button
-                            type="button"
-                            onClick={() => setQuickAccount("admin@gmail.com")}
-                            className={`btn btn-sm ${email === "admin@gmail.com" ? "btn-danger" : "btn-outline-danger"} flex-fill`}
-                        >
-                            Admin
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setQuickAccount("operator@gmail.com")}
-                            className={`btn btn-sm ${email === "operator@gmail.com" ? "btn-primary" : "btn-outline-primary"} flex-fill`}
-                        >
-                            Operator
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => setQuickAccount("viewer@gmail.com")}
-                            className={`btn btn-sm ${email === "viewer@gmail.com" ? "btn-secondary" : "btn-outline-secondary"} flex-fill`}
-                        >
-                            Viewer
-                        </button>
-                    </div>
-                    <div className="text-muted text-center mt-2 style-italic" style={{ fontSize: "0.75rem" }}>
-                        *Password default untuk semua akun: <code>password</code>
-                    </div>
-                </div>
 
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
